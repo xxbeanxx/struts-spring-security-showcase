@@ -3,8 +3,9 @@
 <struts>
 	
 	<constant name="struts.devMode" value="true" />
+
 	
-	<package name="default" extends="struts-default">
+	<package namespace="/" name="anonymous" extends="struts-default">
 	
 		<default-action-ref name="index"/>
 	
@@ -13,5 +14,36 @@
 		</action>
 	
 	</package>
+
+
+	<package namespace="/admin" name="admin" extends="struts-default">
+	
+		<default-action-ref name="index"/>
+	
+		<action name="index" class="com.github.xxbeanxx.struts.actions.admin.IndexAction">
+			<result name="success">/WEB-INF/jsps/index.jsp</result>
+		</action>
+	
+		<action name="full-access" class="com.github.xxbeanxx.struts.actions.admin.IndexAction" method="fullAccess">
+			<result name="success">/WEB-INF/jsps/index.jsp</result>
+		</action>
+
+	</package>
+
+	
+	<package namespace="/auth" name="authenticated" extends="struts-default">
+	
+		<default-action-ref name="index"/>
+	
+		<action name="index" class="com.github.xxbeanxx.struts.actions.auth.IndexAction">
+			<result name="success">/WEB-INF/jsps/index.jsp</result>
+		</action>
+	
+		<action name="has-sin" class="com.github.xxbeanxx.struts.actions.auth.IndexAction" method="hasSin">
+			<result name="success">/WEB-INF/jsps/index.jsp</result>
+		</action>
+
+	</package>
+
 
 </struts>

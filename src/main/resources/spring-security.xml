@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:security="http://www.springframework.org/schema/security"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="
+				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<security:global-method-security secured-annotations="enabled"/>
+	
+	<security:http auto-config="true">
+		<security:http-basic/>
+		
+		<security:intercept-url pattern="/auth/has-sin.action" access="ROLE_HAS_SIN"/>
+		<security:intercept-url pattern="/auth/**" access="ROLE_USER"/>
+		
+		<security:intercept-url pattern="/admin/full-access.action" access="ROLE_ANONYMOUS,ROLE_USER"/>
+		<security:intercept-url pattern="/admin/**" access="ROLE_ADMINISTRATOR"/>
+	</security:http>
+	
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:user-service>
+				<security:user name="admin" password="admin" authorities="ROLE_USER,ROLE_ADMINISTRATOR"/>
+				<security:user name="test" password="test" authorities="ROLE_USER"/>
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>
