@@ -7,8 +7,11 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-        	classpath:spring.xml
-        	classpath:spring-security.xml
+        	classpath:/spring.xml
+        	classpath:/spring-security.xml
+        	
+        	classpath*:/spring-overrides.xml
+        	classpath*:/spring-security-overrides.xml
         </param-value>
     </context-param>
 

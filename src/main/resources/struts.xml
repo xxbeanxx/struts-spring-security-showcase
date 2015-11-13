@@ -13,6 +13,10 @@
 			<result name="success">/WEB-INF/jsps/index.jsp</result>
 		</action>
 	
+		<action name="login">
+			<result name="success">/WEB-INF/jsps/login.jsp</result>
+		</action>
+	
 	</package>
 
 

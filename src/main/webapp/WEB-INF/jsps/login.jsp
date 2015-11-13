@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="security"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/struts-tags" prefix="s"%>
 <security:authentication property="principal" var="user"/>
 <!DOCTYPE html>
@@ -33,57 +34,37 @@
 					</button>
 					<s:a namespace="/" action="index" cssClass="navbar-brand">Struts II/Spring 4 Security Showcase</s:a>
 				</div>
-				
-				<div id="navbar" class="navbar-collapse collapse">
-					<s:if test="%{#attr['user'] == 'anonymousUser'}">
-						<div class="navbar-form navbar-right">
-							<s:a action="login" cssClass="btn btn-success">Stub Login</s:a>
-						</div>
-					</s:if>
-					<s:else>
-						<form method="post" action="${pageContext.request.contextPath}/logout" class="navbar-form navbar-right">
-							<a href="#" class="btn btn-link">${user.username}</a>
-							<s:hidden name="%{#attr._csrf.parameterName}" value="%{#attr._csrf.token}"/>
-							<button type="submit" class="btn btn-success">Log out</button>
-						</form>
-					</s:else>
-				</div>
 			</div>
 		</nav>
 		
-		<!-- Main jumbotron for a primary marketing message or call to action -->
-		<div class="jumbotron">
-			<div class="container">
-				<h1>Welcome, ${user == 'anonymousUser' ? 'guest' : user.username}!</h1>
-
-				<small class="text-muted">(you are currently accessing <strong><s:property value="%{namespace}"/></strong>)</small>
-
-				<p>
-					This application is intended to be a showcase of Spring Security 4.x within a Struts II context
-				</p>
-			</div>
-		</div>
 		
-		<div class="container">
-			<!-- Example row of columns -->
-			<div class="row">
-				<div class="col-md-4">
-					<h2>Unsecured Page</h2>
-					<p>Click the button below to access an <strong>unsecured</strong> page.</p>
-					<p><s:a namespace="/" action="index" cssClass="btn btn-default" role="button">Unsecured &raquo;</s:a></p>
+		<div class="container" style="padding-top:48px">
+			<h1>Stub login</h1>
+			
+			<c:if test="${not empty SPRING_SECURITY_LAST_EXCEPTION}">
+				<div class="alert alert-danger" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only">Error:</span> <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}"/>
 				</div>
-				<div class="col-md-4">
-					<h2>Authenticated Page</h2>
-					<p>Click the button below to access an <strong>authenticated</strong> page.</p>
-					<p><s:a namespace="/auth" action="index" cssClass="btn btn-default" role="button">Authenticated &raquo;</s:a></p>
+			</c:if>
+			
+			<form method="post" action="${pageContext.request.contextPath}/login">
+				<div class="form-group">
+					<input type="text" placeholder="username" class="form-control" name="username">
 				</div>
-				<div class="col-md-4">
-					<h2>Admin Page</h2>
-					<p>Click the button below to access an <strong>admin</strong> page.</p>
-					<p><s:a namespace="/admin" action="index" cssClass="btn btn-default" role="button">Admin &raquo;</s:a></p>
+				
+				<div class="form-group hidden" id="password-group">
+					<input type="password" placeholder="password" class="form-control" name="password" id="password">
 				</div>
-			</div>
-		
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" onchange="$('#password-group').toggleClass('hidden');$('#password').val('')"> Administrative Login
+					</label>
+				</div>
+				<s:hidden name="%{#attr._csrf.parameterName}" value="%{#attr._csrf.token}"/>
+				<button type="submit" class="btn btn-success">Sign in</button>
+			</form>
+
 			<hr>
 		
 			<footer>
@@ -94,5 +75,9 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" crossorigin="anonymous"
 				integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="></script>		
+				
+		<script>
+			
+		</script>
 	</body>
 </html>
