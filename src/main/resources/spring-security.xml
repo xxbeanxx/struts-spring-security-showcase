@@ -17,15 +17,19 @@
 			<security:concurrency-control max-sessions="1"/>
 		</security:session-management>
 
-		<security:intercept-url pattern="/auth/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/auth/**" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMINISTRATOR')"/>
 	</security:http>
 	
 	
-	<security:authentication-manager alias="authenticationManager">
+	<security:authentication-manager id="preAuthenticationAuthenticationManager">
 		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
+	</security:authentication-manager>
+
+
+	<security:authentication-manager>
 		<security:authentication-provider>
-			<security:password-encoder ref="bCryptPasswordEncoder"/>
+			<security:password-encoder hash="bcrypt"/>
 			<security:user-service>
 				<security:user name="${user.admin.username}" password="${user.admin.password}" authorities="${user.admin.roles}"/>
 			</security:user-service>
@@ -33,13 +37,8 @@
 	</security:authentication-manager>
 
 
-	<bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
-		<constructor-arg name="strength" value="16" />
-	</bean>
-
-
 	<bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="authenticationManager" ref="preAuthenticationAuthenticationManager" />
 		<property name="exceptionIfHeaderMissing" value="${security.request-header-authentication-filter.exception-if-header-missing}"/>
 		<property name="principalRequestHeader" value="${security.request-header-authentication-filter.principal-request-header}" />
 	</bean>
