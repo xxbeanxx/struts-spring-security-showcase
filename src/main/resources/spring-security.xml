@@ -12,21 +12,48 @@
 	
 
 	<security:http auto-config="true">
-		<security:intercept-url pattern="/auth/has-sin.action" access="ROLE_HAS_SIN"/>
-		<security:intercept-url pattern="/auth/**" access="ROLE_USER"/>
-		
-		<security:intercept-url pattern="/admin/full-access.action" access="ROLE_ANONYMOUS,ROLE_USER"/>
-		<security:intercept-url pattern="/admin/**" access="ROLE_ADMINISTRATOR"/>
+		<security:custom-filter position="PRE_AUTH_FILTER" ref="requestHeaderAuthenticationFilter" />
+		<security:session-management>
+			<security:concurrency-control max-sessions="1"/>
+		</security:session-management>
+
+		<security:intercept-url pattern="/auth/**" access="hasRole('ROLE_USER')"/>
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMINISTRATOR')"/>
 	</security:http>
 	
 	
 	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
 		<security:authentication-provider>
+			<security:password-encoder ref="bCryptPasswordEncoder"/>
 			<security:user-service>
-				<security:user name="admin" password="admin" authorities="ROLE_USER,ROLE_ADMINISTRATOR"/>
-				<security:user name="test" password="test" authorities="ROLE_USER"/>
+				<security:user name="${user.admin.username}" password="${user.admin.password}" authorities="${user.admin.roles}"/>
 			</security:user-service>
 		</security:authentication-provider>
 	</security:authentication-manager>
+
+
+	<bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+		<constructor-arg name="strength" value="16" />
+	</bean>
+
+
+	<bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="exceptionIfHeaderMissing" value="${security.request-header-authentication-filter.exception-if-header-missing}"/>
+		<property name="principalRequestHeader" value="${security.request-header-authentication-filter.principal-request-header}" />
+	</bean>
+
+
+	<bean id="preAuthenticatedAuthenticationProvider" class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<property name="preAuthenticatedUserDetailsService">
+			<bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+				<property name="userDetailsService" ref="preAuthenticatedUserDetailsService"/>
+			</bean>
+		</property>
+	</bean>
+
+	
+	<bean id="preAuthenticatedUserDetailsService" class="com.github.xxbeanxx.struts.security.PreAuthenticatedUserDetailsService"/>
 
 </beans>
