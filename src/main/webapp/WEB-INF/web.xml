@@ -16,6 +16,12 @@
     </context-param>
 
 
+	<context-param>
+		<param-name>contextInitializerClasses</param-name>
+		<param-value>com.github.xxbeanxx.struts.context.EnvironmentContextInitializer</param-value>
+	</context-param>
+
+
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>*</url-pattern>

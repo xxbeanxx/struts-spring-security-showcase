@@ -48,21 +48,29 @@
 				</div>
 			</c:if>
 			
+			<s:form namespace="/" action="index.action">
+				<div class="form-group">
+					<input type="text" placeholder="pid" class="form-control" name="pid">
+				</div>
+				<s:hidden name="%{#attr._csrf.parameterName}" value="%{#attr._csrf.token}"/>
+				<button type="submit" class="btn btn-success">PID Login</button>
+			</s:form>
+
+			<div class="row">
+				<hr class="col-md-offset-4 col-md-4">
+			</div>
+
 			<form method="post" action="${pageContext.request.contextPath}/login">
 				<div class="form-group">
 					<input type="text" placeholder="username" class="form-control" name="username">
 				</div>
 				
-				<div class="form-group hidden" id="password-group">
-					<input type="password" placeholder="password" class="form-control" name="password" id="password">
+				<div class="form-group">
+					<input type="password" placeholder="password" class="form-control" name="password">
 				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" onchange="$('#password-group').toggleClass('hidden');$('#password').val('')"> Administrative Login
-					</label>
-				</div>
+				
 				<s:hidden name="%{#attr._csrf.parameterName}" value="%{#attr._csrf.token}"/>
-				<button type="submit" class="btn btn-success">Sign in</button>
+				<button type="submit" class="btn btn-success">Admin Login</button>
 			</form>
 
 			<hr>

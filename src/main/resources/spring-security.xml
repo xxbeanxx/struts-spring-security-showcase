@@ -9,34 +9,12 @@
 				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<security:global-method-security secured-annotations="enabled"/>
-	
-
-	<security:http auto-config="true">
-		<security:custom-filter position="PRE_AUTH_FILTER" ref="requestHeaderAuthenticationFilter" />
-		<security:session-management>
-			<security:concurrency-control max-sessions="1"/>
-		</security:session-management>
-		<security:form-login default-target-url="/auth/index.action" login-page="/login.action"/>
-		<security:logout logout-success-url="/index.action" logout-url="/logout"/>
 		
-		<security:intercept-url pattern="/view-tax-slips.action" access="hasRole('ROLE_FULL_ACCESS')"/>
-		<security:intercept-url pattern="/auth/**" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMINISTRATOR')"/>
-	</security:http>
-	
-	
 	<security:authentication-manager alias="preAuthenticationAuthenticationManager">
 		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
 	</security:authentication-manager>
 
-
-	<bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
-		<property name="authenticationManager" ref="preAuthenticationAuthenticationManager" />
-		<property name="exceptionIfHeaderMissing" value="${security.request-header-authentication-filter.exception-if-header-missing}"/>
-		<property name="principalRequestHeader" value="${security.request-header-authentication-filter.principal-request-header}" />
-	</bean>
-
-
+	
 	<bean id="preAuthenticatedAuthenticationProvider" class="com.github.xxbeanxx.struts.security.PreAuthenticatedAuthenticationProvider">
 		<property name="preAuthenticatedUserDetailsService">
 			<bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
@@ -47,5 +25,28 @@
 
 	
 	<bean id="preAuthenticatedUserDetailsService" class="com.github.xxbeanxx.struts.security.PreAuthenticatedUserDetailsService"/>
+
+	
+	<bean id="requestHeaderAuthenticationFilter" class="org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter">
+		<property name="authenticationManager" ref="preAuthenticationAuthenticationManager" />
+		<property name="exceptionIfHeaderMissing" value="${security.request-header-authentication-filter.exception-if-header-missing}"/>
+		<property name="principalRequestHeader" value="${security.request-header-authentication-filter.principal-request-header}" />
+	</bean>
+
+	
+	<beans profile="production">
+		<security:http auto-config="true">
+			<security:custom-filter position="PRE_AUTH_FILTER" ref="requestHeaderAuthenticationFilter"/>
+			
+			<security:session-management>
+				<security:concurrency-control max-sessions="1"/>
+			</security:session-management>
+			
+			<security:logout logout-success-url="/index.action" logout-url="/logout"/>
+			
+			<security:intercept-url pattern="/auth/**" access="isAuthenticated()"/>
+			<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMINISTRATOR')"/>
+		</security:http>
+	</beans>
 
 </beans>

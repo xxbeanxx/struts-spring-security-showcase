@@ -16,13 +16,34 @@
 				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 	<security:authentication-manager alias="preAuthenticationAuthenticationManager">
-		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
 		<security:authentication-provider>
 			<security:password-encoder hash="bcrypt"/>
 			<security:user-service>
 				<security:user name="${user.admin.username}" password="${user.admin.password}" authorities="${user.admin.roles}"/>
 			</security:user-service>
 		</security:authentication-provider>
+		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
 	</security:authentication-manager>
+
+	<bean id="stubLoginAuthenticationProcessingFilter" class="com.github.xxbeanxx.struts.security.StubLoginAuthenticationProcessingFilter">
+		<property name="authenticationManager" ref="preAuthenticationAuthenticationManager" />
+	</bean>
+		
+
+	<beans profile="development">
+		<security:http auto-config="true">
+			<security:custom-filter position="PRE_AUTH_FILTER" ref="stubLoginAuthenticationProcessingFilter"/>
+			
+			<security:session-management>
+				<security:concurrency-control max-sessions="1"/>
+			</security:session-management>
+			
+			<security:form-login default-target-url="/auth/index.action" login-page="/login.action" />
+			<security:logout logout-success-url="/index.action" logout-url="/logout"/>
+			
+			<security:intercept-url pattern="/auth/**" access="isAuthenticated()"/>
+			<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMINISTRATOR')"/>
+		</security:http>
+	</beans>
 
 </beans>
