@@ -175,6 +175,20 @@
 	</dependencies>
 
 	<build>
+		
+		<!-- =============================================================== -->
+		<!--         add in our dev resources (TODO: remove for prod)        -->
+		<!-- =============================================================== -->
+		
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/dev/resources</directory>
+			</resource>
+		</resources>
+	
 		<plugins>
 		
 			<plugin>

@@ -8,7 +8,14 @@
 				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
+
 	<security:global-method-security secured-annotations="enabled"/>
+
+
+	<!-- =================================================================== -->
+	<!--        Pre-auth (header) security configuration                     -->
+	<!-- =================================================================== -->
+
 		
 	<security:authentication-manager alias="preAuthenticationAuthenticationManager">
 		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
@@ -34,13 +41,18 @@
 	</bean>
 
 	
+	<!-- =================================================================== -->
+	<!--        Security context for the production environment              -->
+	<!-- =================================================================== -->
+
+		
 	<beans profile="production">
 		<security:http auto-config="true">
-			<security:custom-filter position="PRE_AUTH_FILTER" ref="requestHeaderAuthenticationFilter"/>
-			
 			<security:session-management>
 				<security:concurrency-control max-sessions="1"/>
 			</security:session-management>
+			
+			<security:custom-filter position="PRE_AUTH_FILTER" ref="requestHeaderAuthenticationFilter"/>
 			
 			<security:logout logout-success-url="/index.action" logout-url="/logout"/>
 			

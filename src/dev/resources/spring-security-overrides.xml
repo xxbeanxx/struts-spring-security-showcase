@@ -15,6 +15,13 @@
 				http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
+
+	<!-- =================================================================== -->
+	<!--        Username/paswword security configuration                     -->
+	<!--        Pre-auth (header) security configuration                     -->
+	<!-- =================================================================== -->
+
+
 	<security:authentication-manager alias="preAuthenticationAuthenticationManager">
 		<security:authentication-provider>
 			<security:password-encoder hash="bcrypt"/>
@@ -22,21 +29,31 @@
 				<security:user name="${user.admin.username}" password="${user.admin.password}" authorities="${user.admin.roles}"/>
 			</security:user-service>
 		</security:authentication-provider>
+		
 		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
 	</security:authentication-manager>
 
-	<bean id="stubLoginAuthenticationProcessingFilter" class="com.github.xxbeanxx.struts.security.StubLoginAuthenticationProcessingFilter">
-		<property name="authenticationManager" ref="preAuthenticationAuthenticationManager" />
+
+	<bean id="switchUserFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
+		<property name="userDetailsService" ref="preAuthenticatedUserDetailsService" />
+		<property name="usernameParameter" value="SCAN-ISCI-PID"/>
+		<property name="targetUrl" value="/auth/index.action" />
 	</bean>
 		
 
+	<!-- =================================================================== -->
+	<!--        Security context for the production environment              -->
+	<!-- =================================================================== -->
+
+		
 	<beans profile="development">
 		<security:http auto-config="true">
-			<security:custom-filter position="PRE_AUTH_FILTER" ref="stubLoginAuthenticationProcessingFilter"/>
-			
 			<security:session-management>
 				<security:concurrency-control max-sessions="1"/>
 			</security:session-management>
+			
+			<security:custom-filter position="PRE_AUTH_FILTER" ref="requestHeaderAuthenticationFilter"/>
+			<security:custom-filter position="SWITCH_USER_FILTER" ref="switchUserFilter"/>
 			
 			<security:form-login default-target-url="/auth/index.action" login-page="/login.action" />
 			<security:logout logout-success-url="/index.action" logout-url="/logout"/>
