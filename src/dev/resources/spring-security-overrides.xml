@@ -16,24 +16,6 @@
 				http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 
-	<!-- =================================================================== -->
-	<!--        Username/paswword security configuration                     -->
-	<!--        Pre-auth (header) security configuration                     -->
-	<!-- =================================================================== -->
-
-
-	<security:authentication-manager alias="preAuthenticationAuthenticationManager">
-		<security:authentication-provider>
-			<security:password-encoder hash="bcrypt"/>
-			<security:user-service>
-				<security:user name="${user.admin.username}" password="${user.admin.password}" authorities="${user.admin.roles}"/>
-			</security:user-service>
-		</security:authentication-provider>
-		
-		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
-	</security:authentication-manager>
-
-
 	<bean id="switchUserFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
 		<property name="userDetailsService" ref="preAuthenticatedUserDetailsService" />
 		<property name="usernameParameter" value="SCAN-ISCI-PID"/>
@@ -47,6 +29,25 @@
 
 		
 	<beans profile="development">
+		<!-- =================================================================== -->
+		<!--        Username/paswword security configuration                     -->
+		<!--        Pre-auth (header) security configuration                     -->
+		<!--        Impersonation security configuration                         -->
+		<!-- =================================================================== -->
+	
+	
+		<security:authentication-manager alias="preAuthenticationAuthenticationManager">
+			<security:authentication-provider>
+				<security:password-encoder hash="bcrypt"/>
+				<security:user-service>
+					<security:user name="${user.admin.username}" password="${user.admin.password}" authorities="${user.admin.roles}"/>
+				</security:user-service>
+			</security:authentication-provider>
+			
+			<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
+		</security:authentication-manager>
+	
+	
 		<security:http auto-config="true">
 			<security:session-management>
 				<security:concurrency-control max-sessions="1"/>

@@ -12,16 +12,6 @@
 	<security:global-method-security secured-annotations="enabled"/>
 
 
-	<!-- =================================================================== -->
-	<!--        Pre-auth (header) security configuration                     -->
-	<!-- =================================================================== -->
-
-		
-	<security:authentication-manager alias="preAuthenticationAuthenticationManager">
-		<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
-	</security:authentication-manager>
-
-	
 	<bean id="preAuthenticatedAuthenticationProvider" class="com.github.xxbeanxx.struts.security.PreAuthenticatedAuthenticationProvider">
 		<property name="preAuthenticatedUserDetailsService">
 			<bean class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
@@ -47,6 +37,17 @@
 
 		
 	<beans profile="production">
+	
+		<!-- =================================================================== -->
+		<!--        Pre-auth (header) security configuration                     -->
+		<!-- =================================================================== -->
+	
+			
+		<security:authentication-manager alias="preAuthenticationAuthenticationManager">
+			<security:authentication-provider ref="preAuthenticatedAuthenticationProvider"/>
+		</security:authentication-manager>
+
+
 		<security:http auto-config="true">
 			<security:session-management>
 				<security:concurrency-control max-sessions="1"/>
