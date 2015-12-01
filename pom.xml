@@ -47,7 +47,6 @@
 	</properties>
 
 	<dependencies>
-		
 		<!-- =============================================================== -->
 		<!--         JEE APIs                                                -->
 		<!-- =============================================================== -->
@@ -177,11 +176,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.xxbeanxx</groupId>
-			<artifactId>locale-change-filter</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
